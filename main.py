@@ -37,6 +37,21 @@ def generateXandY():
     randomNumber = round(randomNumber,2)
     y.append(randomNumber)
 
+def mutate(matrix): # mutate a random's position value 
+  for i in range(0, len(matrix)):
+      randomNum = random.randint(0, 20) 
+      randonPos = random.randint(0, 20)
+      matrix[i][randonPos] = randomNum
+
+def permute(matrix): # iterate through each line and swap randomly two values
+  for i in range(0, len(matrix)):
+    firstRandom = random.randint(0, 20)
+    secondRandom = random.randint(0, 20) 
+    backup = matrix[i][firstRandom]
+    matrix[i][firstRandom] = matrix[i][secondRandom]
+    matrix[i][secondRandom] = backup
+
+
 def main():
   generateFirstPopulation()
   generateXandY()
