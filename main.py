@@ -87,6 +87,8 @@ def calculateDistances():
             distances[i] += dCidade[firstPos][secondPos]
     dict_dist = { i : distances[i] for i in range(0, len(distances) ) }
     distances = dict_dist
+    sorted_x = sorted(distances.items(), key=lambda kv: kv[1])
+    print(sorted_x)
 
 # Generate the identity matrix (dCidade)
 def fitnessFunction():
@@ -97,10 +99,12 @@ def fitnessFunction():
 
 
 def main():
+    # runs only once
     generateFirstPopulation()
     generateXandY()
+
+    # runs in a loop 0 - 9999
     fitnessFunction()
-    print(distances)
 
 
 if __name__ == "__main__":
