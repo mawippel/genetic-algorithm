@@ -79,11 +79,14 @@ def getTour():
 
 # Generates an array with the sum of each way
 def calculateDistances():
+    global distances
     for i in range(len(population)):
         for j in range(len(population[i])):
             firstPos = 19 if getTour()[i][j] == 20 else getTour()[i][j]
             secondPos = 19 if getTour()[i][j+1] == 20 else getTour()[i][j+1]
             distances[i] += dCidade[firstPos][secondPos]
+    dict_dist = { i : distances[i] for i in range(0, len(distances) ) }
+    distances = dict_dist
 
 # Generate the identity matrix (dCidade)
 def fitnessFunction():
