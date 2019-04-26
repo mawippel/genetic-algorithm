@@ -1,63 +1,104 @@
 import random
+import copy
+import math
 
 POPULATION_SIZE = 20
 CITIES_SIZE = 20
 population = []
 x = []
 y = []
-tour = []
+dCidade = [[0 for x in range(POPULATION_SIZE)] for y in range(POPULATION_SIZE)]
+distances = [0 for x in range(POPULATION_SIZE)]
+
 
 def generateFirstPopulation():
-  # For each position, generates a new possible path
-  for _ in range(1, POPULATION_SIZE + 1):
-    generatePossiblePath()
+    # For each position, generates a new possible path
+    for _ in range(1, POPULATION_SIZE + 1):
+        generatePossiblePath()
+
 
 def generatePossiblePath():
-  path = []
-  for _ in range(1, CITIES_SIZE + 1):
-    randomNum = random.randint(1, 20) # generates a new number between 1 - 20
-    while(numberExistsInPath(path, randomNum)): # while the generated number exists in the list, generates a new one
-      randomNum = random.randint(1, 20)
-    path.append(randomNum)
-  population.append(path)
+    path = []
+    for _ in range(1, CITIES_SIZE + 1):
+        # generates a new number between 1 - 20
+        randomNum = random.randint(1, 20)
+        # while the generated number exists in the list, generates a new one
+        while(numberExistsInPath(path, randomNum)):
+            randomNum = random.randint(1, 20)
+        path.append(randomNum)
+    population.append(path)
+
 
 def numberExistsInPath(path, number):
-  for i in path:
-    if i == number:
-      return True
-  return False
+    for i in path:
+        if i == number:
+            return True
+    return False
+
 
 def generateXandY():
-  for _ in range(CITIES_SIZE):
-    randomNumber = random.random()
-    randomNumber = round(randomNumber,2)
-    x.append(randomNumber)
+    for _ in range(CITIES_SIZE):
+        randomNumber = random.random()
+        randomNumber = round(randomNumber, 2)
+        x.append(randomNumber)
 
-    randomNumber = random.random()
-    randomNumber = round(randomNumber,2)
-    y.append(randomNumber)
+        randomNumber = random.random()
+        randomNumber = round(randomNumber, 2)
+        y.append(randomNumber)
 
-def mutate(matrix): # mutate a random's position value 
-  for i in range(0, len(matrix)):
-      randomNum = random.randint(0, 20) 
-      randonPos = random.randint(0, 20)
-      matrix[i][randonPos] = randomNum
+# mutate a random's position value
 
-def permute(matrix): # iterate through each line and swap randomly two values
-  for i in range(0, len(matrix)):
-    firstRandom = random.randint(0, 20)
-    secondRandom = random.randint(0, 20) 
-    backup = matrix[i][firstRandom]
-    matrix[i][firstRandom] = matrix[i][secondRandom]
-    matrix[i][secondRandom] = backup
+
+def mutate(matrix):
+    for i in range(0, len(matrix)):
+        randomNum = random.randint(0, 20)
+        randonPos = random.randint(0, 20)
+        matrix[i][randonPos] = randomNum
+
+# iterate through each line and swap randomly two values
+
+
+def permute(matrix):
+    for i in range(0, len(matrix)):
+        firstRandom = random.randint(0, 20)
+        secondRandom = random.randint(0, 20)
+        backup = matrix[i][firstRandom]
+        matrix[i][firstRandom] = matrix[i][secondRandom]
+        matrix[i][secondRandom] = backup
+
+# Returns the updated tour matrix
+
+
+def getTour():
+    tour = copy.deepcopy(population)
+
+    for ways in tour:
+        first = ways[0]
+        ways.append(first)
+    return tour
+
+# Generates an array with the sum of each way
+def calculateDistances():
+    for i in range(len(population)):
+        for j in range(len(population[i])):
+            firstPos = 19 if getTour()[i][j] == 20 else getTour()[i][j]
+            secondPos = 19 if getTour()[i][j+1] == 20 else getTour()[i][j+1]
+            distances[i] += dCidade[firstPos][secondPos]
+
+# Generate the identity matrix (dCidade)
+def fitnessFunction():
+    for i in range(len(population)):
+        for j in range(len(population[i])):
+            dCidade[i][j] = math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
+    calculateDistances()
 
 
 def main():
-  generateFirstPopulation()
-  generateXandY()
-  print(x)
-  print(y)
-  print(population)
+    generateFirstPopulation()
+    generateXandY()
+    fitnessFunction()
+    print(distances)
+
 
 if __name__ == "__main__":
-  main()
+    main()
