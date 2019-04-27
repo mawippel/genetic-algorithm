@@ -88,15 +88,33 @@ def calculateDistances():
     dict_dist = { i : distances[i] for i in range(0, len(distances) ) }
     distances = dict_dist
     sorted_x = sorted(distances.items(), key=lambda kv: kv[1])
-    print(sorted_x)
+    return sorted_x
 
 # Generate the identity matrix (dCidade)
 def fitnessFunction():
     for i in range(len(population)):
         for j in range(len(population[i])):
             dCidade[i][j] = math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
-    calculateDistances()
+    return calculateDistances()
 
+def rouletteFunction(sorted_x):
+    arr = []
+    rouletteArr = []
+    for i in range(10):
+        arr.append(sorted_x[i][0])
+    for j in range(len(arr)):
+        for _ in range(10 - j):
+            rouletteArr.append(arr[j])
+    parents1 = createParents(rouletteArr)
+    parents2 = createParents(rouletteArr)
+    print(parents1)
+    print(parents2)
+
+def createParents(rouletteArr):
+    parentArr = []
+    for _ in range(5):
+        parentArr.append(rouletteArr[random.randint(0, 54)])
+    return parentArr
 
 def main():
     # runs only once
@@ -104,7 +122,10 @@ def main():
     generateXandY()
 
     # runs in a loop 0 - 9999
-    fitnessFunction()
+    sorted_x = fitnessFunction()
+    rouletteFunction(sorted_x)
+# TODO crossover
+# TODO mutacao
 
 
 if __name__ == "__main__":
