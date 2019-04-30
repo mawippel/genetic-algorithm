@@ -3,8 +3,10 @@ import copy
 import math
 
 POPULATION_SIZE = 20
+TOUR_SIZE = 21
 CITIES_SIZE = 20
 population = []
+tour = [[0 for x in range(TOUR_SIZE)] for y in range(TOUR_SIZE)]
 x = []
 y = []
 parentsOne = None
@@ -60,14 +62,12 @@ def mutate(matrix):
             matrix[i][indexOne] = auxTwo
             matrix[i][indexTwo] = auxOne
 
-# Returns the updated tour matrix
-def getTour():
+def generateTour():
+    global tour
     tour = copy.deepcopy(population)
-
     for ways in tour:
         first = ways[0]
         ways.append(first)
-    return tour
 
 # Generates an array with the sum of each way
 def calculateDistances():
@@ -75,8 +75,8 @@ def calculateDistances():
     distances = [0 for x in range(POPULATION_SIZE)]
     for i in range(len(population)):
         for j in range(len(population[i])):
-            firstPos = 19 if getTour()[i][j] == 20 else getTour()[i][j]
-            secondPos = 19 if getTour()[i][j+1] == 20 else getTour()[i][j+1]
+            firstPos = 19 if tour[i][j] == 20 else tour[i][j]
+            secondPos = 19 if tour[i][j+1] == 20 else tour[i][j+1]
             distances[i] += dCidade[firstPos][secondPos]
     dict_dist = {i: distances[i] for i in range(0, len(distances))}
     distances = copy.deepcopy(dict_dist)
@@ -175,17 +175,18 @@ def main():
     # runs only once
     generateFirstPopulation()
     generateXandY()
+    generateTour()
 
     # runs in a loop 0 - 9999
-    for i in range(10):
+    for i in range(9999):
         sorted_x = fitnessFunction()
         if i == 0:  # storage the fitness value of the first population
-                firstFitnessValue = sorted_x
+            firstFitnessValue = sorted_x
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
-        print(i)
 
     print(firstFitnessValue)
+    print('-------')
     print(sorted_x)
 
     for i in population:
