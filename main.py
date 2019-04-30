@@ -78,7 +78,7 @@ def calculateDistances():
             firstPos = 19 if getTour()[i][j] == 20 else getTour()[i][j]
             secondPos = 19 if getTour()[i][j+1] == 20 else getTour()[i][j+1]
             distances[i] += dCidade[firstPos][secondPos]
-    dict_dist = { i : distances[i] for i in range(0, len(distances) ) }
+    dict_dist = {i: distances[i] for i in range(0, len(distances))}
     distances = copy.deepcopy(dict_dist)
     return sorted(distances.items(), key=lambda kv: kv[1])
 
@@ -88,6 +88,7 @@ def fitnessFunction():
         for j in range(len(population)):
             dCidade[i][j] = math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
     return calculateDistances()
+
 
 def rouletteFunction(sorted_x):
     global parentsOne
@@ -102,11 +103,13 @@ def rouletteFunction(sorted_x):
     parentsOne = createParents(rouletteArr)
     parentsTwo = createParents(rouletteArr)
 
+
 def createParents(rouletteArr):
     parentArr = []
     for _ in range(5):
         parentArr.append(rouletteArr[random.randint(0, 54)])
     return parentArr
+
 
 def hasDuplicity(auxArray, usedIndexes):
     for i in range(len(auxArray)):
@@ -118,16 +121,16 @@ def hasDuplicity(auxArray, usedIndexes):
                     return i
     return -1
 
+
 def doCycle(sorted_x):
     global population
     children = []
 
-    # percorrer ate 5
     for i in range(5):
         parentOneAux = parentsOne[i]
         parentTwoAux = parentsTwo[i]
         usedIndexes = []
-    
+
         randomIndexInsideCromossomus = random.randint(0, POPULATION_SIZE - 1)
 
         usedIndexes.append(randomIndexInsideCromossomus)
@@ -151,10 +154,10 @@ def doCycle(sorted_x):
             childOne[newIndex] = valAuxTwo
             childTwo[newIndex] = valAuxOne
 
-        # apos gerar os filhos, ordena a populacao, e adiciona os filhos
+        # after generating the children, add them in the children's array
         children.append(childOne)
         children.append(childTwo)
-    
+
     mutate(children)
 
     # make a temp copy of the population before changing it
@@ -163,9 +166,10 @@ def doCycle(sorted_x):
     for i in range(10):
         population[i] = copy.deepcopy(tempPop[sorted_x[i][0]])
 
-    # Ajustar a populacao
+    # Adjust the population
     for j in range(10, POPULATION_SIZE):
         population[j] = copy.deepcopy(children[j - 10])
+
 
 def main():
     # runs only once
@@ -173,16 +177,20 @@ def main():
     generateXandY()
 
     # runs in a loop 0 - 9999
-    for i in range(100):
+    for i in range(10):
         sorted_x = fitnessFunction()
+        if i == 0:  # storage the fitness value of the first population
+                firstFitnessValue = sorted_x
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
         print(i)
-    
+
+    print(firstFitnessValue)
     print(sorted_x)
 
     for i in population:
         print(i)
+
 
 if __name__ == "__main__":
     main()
