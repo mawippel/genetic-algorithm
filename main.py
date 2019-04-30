@@ -85,11 +85,13 @@ def calculateDistances():
 # Generate the identity matrix (dCidade)
 def fitnessFunction():
     for i in range(len(population)):
-        for j in range(len(population[i])):
+        for j in range(len(population)):
             dCidade[i][j] = math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
     return calculateDistances()
 
 def rouletteFunction(sorted_x):
+    global parentsOne
+    global parentsTwo
     arr = []
     rouletteArr = []
     for i in range(10):
@@ -97,8 +99,6 @@ def rouletteFunction(sorted_x):
     for j in range(len(arr)):
         for _ in range(10 - j):
             rouletteArr.append(arr[j])
-    global parentsOne
-    global parentsTwo
     parentsOne = createParents(rouletteArr)
     parentsTwo = createParents(rouletteArr)
 
@@ -152,17 +152,16 @@ def doCycle(sorted_x):
             childTwo[newIndex] = valAuxOne
 
         # apos gerar os filhos, ordena a populacao, e adiciona os filhos
-        # updates the population array
-
         children.append(childOne)
         children.append(childTwo)
     
-    #for i in population:
-     #   print(i)
-
     mutate(children)
+
+    # make a temp copy of the population before changing it
+    tempPop = copy.deepcopy(population)
+
     for i in range(10):
-        population[i] = copy.deepcopy(population[sorted_x[i][0]])
+        population[i] = copy.deepcopy(tempPop[sorted_x[i][0]])
 
     # Ajustar a populacao
     for j in range(10, POPULATION_SIZE):
@@ -174,13 +173,14 @@ def main():
     generateXandY()
 
     # runs in a loop 0 - 9999
-    for i in range(10):
+    for i in range(100):
         sorted_x = fitnessFunction()
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
-        #print(i)
-
+        print(i)
+    
     print(sorted_x)
+
     for i in population:
         print(i)
 
