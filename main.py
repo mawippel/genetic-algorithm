@@ -49,28 +49,18 @@ def generateXandY():
         y.append(randomNumber)
 
 # mutate a random's position value
-
-
 def mutate(matrix):
     for i in range(0, len(matrix)):
-        randomNum = random.randint(0, 20)
-        randonPos = random.randint(0, 20)
-        matrix[i][randonPos] = randomNum
-
-# iterate through each line and swap randomly two values
-
-
-def permute(matrix):
-    for i in range(0, len(matrix)):
-        firstRandom = random.randint(0, 20)
-        secondRandom = random.randint(0, 20)
-        backup = matrix[i][firstRandom]
-        matrix[i][firstRandom] = matrix[i][secondRandom]
-        matrix[i][secondRandom] = backup
+        ranNum = random.randint(1, 100)
+        if ranNum >= 1 and ranNum <= 5:
+            indexOne = random.randint(0, 9)
+            indexTwo = random.randint(0, 9)
+            auxOne = matrix[i][indexOne]
+            auxTwo = matrix[i][indexTwo]
+            matrix[i][indexOne] = auxTwo
+            matrix[i][indexTwo] = auxOne
 
 # Returns the updated tour matrix
-
-
 def getTour():
     tour = copy.deepcopy(population)
 
@@ -82,16 +72,15 @@ def getTour():
 # Generates an array with the sum of each way
 def calculateDistances():
     global distances
+    distances = [0 for x in range(POPULATION_SIZE)]
     for i in range(len(population)):
         for j in range(len(population[i])):
             firstPos = 19 if getTour()[i][j] == 20 else getTour()[i][j]
             secondPos = 19 if getTour()[i][j+1] == 20 else getTour()[i][j+1]
             distances[i] += dCidade[firstPos][secondPos]
     dict_dist = { i : distances[i] for i in range(0, len(distances) ) }
-    distances = dict_dist
-    sorted_x = sorted(distances.items(), key=lambda kv: kv[1])
-
-    return sorted_x
+    distances = copy.deepcopy(dict_dist)
+    return sorted(distances.items(), key=lambda kv: kv[1])
 
 # Generate the identity matrix (dCidade)
 def fitnessFunction():
@@ -112,8 +101,6 @@ def rouletteFunction(sorted_x):
     global parentsTwo
     parentsOne = createParents(rouletteArr)
     parentsTwo = createParents(rouletteArr)
-    print(parentsOne)
-    print(parentsTwo)
 
 def createParents(rouletteArr):
     parentArr = []
@@ -129,7 +116,7 @@ def hasDuplicity(auxArray, usedIndexes):
                     return j
                 else:
                     return i
-    return False
+    return -1
 
 def doCycle(sorted_x):
     global population
@@ -154,7 +141,7 @@ def doCycle(sorted_x):
         childOne[randomIndexInsideCromossomus] = valAuxTwo
         childTwo[randomIndexInsideCromossomus] = valAuxOne
 
-        while(hasDuplicity(childOne, usedIndexes) != False):
+        while(hasDuplicity(childOne, usedIndexes) != -1):
             newIndex = hasDuplicity(childOne, usedIndexes)
             usedIndexes.append(newIndex)
 
@@ -169,14 +156,17 @@ def doCycle(sorted_x):
 
         children.append(childOne)
         children.append(childTwo)
+    
+    #for i in population:
+     #   print(i)
 
-    print(children)
-
+    mutate(children)
     for i in range(10):
         population[i] = copy.deepcopy(population[sorted_x[i][0]])
-    
-    
-    
+
+    # Ajustar a populacao
+    for j in range(10, POPULATION_SIZE):
+        population[j] = copy.deepcopy(children[j - 10])
 
 def main():
     # runs only once
@@ -184,12 +174,15 @@ def main():
     generateXandY()
 
     # runs in a loop 0 - 9999
-    sorted_x = fitnessFunction()
-    rouletteFunction(sorted_x)
-    doCycle(sorted_x)
+    for i in range(10):
+        sorted_x = fitnessFunction()
+        rouletteFunction(sorted_x)
+        doCycle(sorted_x)
+        #print(i)
 
-# TODO mutacao
-
+    print(sorted_x)
+    for i in population:
+        print(i)
 
 if __name__ == "__main__":
     main()
