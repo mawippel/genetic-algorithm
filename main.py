@@ -184,6 +184,7 @@ def main():
             firstFitnessValue = sorted_x
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
+        generateTour() # generate the Tour matrix again, as the population is updated
 
     print(firstFitnessValue)
     print('-------')
