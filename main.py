@@ -3,16 +3,16 @@ import copy
 import math
 
 POPULATION_SIZE = 20
-TOUR_SIZE = 21
 CITIES_SIZE = 20
+TOUR_SIZE = 21
 population = []
-tour = [[0 for x in range(TOUR_SIZE)] for y in range(TOUR_SIZE)]
 x = []
 y = []
-parentsOne = None
-parentsTwo = None
+tour = [[0 for x in range(TOUR_SIZE)] for y in range(TOUR_SIZE)]
 dCidade = [[0 for x in range(POPULATION_SIZE)] for y in range(POPULATION_SIZE)]
 distances = [0 for x in range(POPULATION_SIZE)]
+parentsOne = None
+parentsTwo = None
 
 
 def generateFirstPopulation():
@@ -161,7 +161,7 @@ def doCycle(sorted_x):
 
     mutate(children)
 
-    # make a temp copy of the population before changing it
+    # Make a temp copy of the population before changing it
     tempPop = copy.deepcopy(population)
 
     for i in range(10):
@@ -179,27 +179,20 @@ def main():
     generateTour()
 
     # runs in a loop 0 - 9999
-    for i in range(9999):
+    for _ in range(9999):
         sorted_x = fitnessFunction()
-        if i == 0:  # storage the fitness value of the first population
-            firstFitnessValue = sorted_x
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
         generateTour() # generate the Tour matrix again, as the population is updated
 
-    print(firstFitnessValue)
-    print('-------')
-    print(sorted_x)
+    # Generates the fitness values for the last population
+    sorted_x = fitnessFunction()
 
-    print('Tamanho da Populacao: %s' % (20))
-    print('Taxa de Mutacao: ')
-    print('Numero de Cidades: %s' % (20))
-    print('Melhor Custo: %s' % sorted_x[0][0])
-    print('Melhor Solucao: %s' % 20)
-
-    for i in population:
-        print(i)
-
+    print('Tamanho da Populacao: %s' % (POPULATION_SIZE))
+    print('Taxa de Mutacao: 5%')
+    print('Numero de Cidades: %s' % (CITIES_SIZE))
+    print('Melhor Custo: %s' % sorted_x[0][1])
+    print('Melhor Solucao: %s' % population[0])
 
 if __name__ == "__main__":
     main()
