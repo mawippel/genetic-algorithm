@@ -1,10 +1,12 @@
 import random
 import copy
 import math
+import matplotlib.pyplot as plt
 
 POPULATION_SIZE = 20
 CITIES_SIZE = 20
 TOUR_SIZE = 21
+NUM_EXECUTION = 9999
 population = []
 x = []
 y = []
@@ -13,6 +15,7 @@ dCidade = [[0 for x in range(POPULATION_SIZE)] for y in range(POPULATION_SIZE)]
 distances = [0 for x in range(POPULATION_SIZE)]
 parentsOne = None
 parentsTwo = None
+costByExecution = []
 
 
 def generateFirstPopulation():
@@ -179,11 +182,12 @@ def main():
     generateTour()
 
     # runs in a loop 0 - 9999
-    for _ in range(9999):
+    for _ in range(NUM_EXECUTION):
         sorted_x = fitnessFunction()
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
         generateTour() # generate the Tour matrix again, as the population is updated
+        costByExecution.append(sorted_x[0][1])
 
     # Generates the fitness values for the last population
     sorted_x = fitnessFunction()
@@ -193,6 +197,16 @@ def main():
     print('Numero de Cidades: %s' % (CITIES_SIZE))
     print('Melhor Custo: %s' % sorted_x[0][1])
     print('Melhor Solucao: %s' % population[0])
+
+    # Show the path graph
+    plt.plot(tour[0])
+    plt.plot(tour[0], 'ro')
+    plt.axis([0, 20, 0, 20])
+    plt.show()
+
+    # Show the cost graph
+    plt.plot(costByExecution)
+    plt.show()
 
 if __name__ == "__main__":
     main()
