@@ -53,14 +53,15 @@ def generateXandY():
 # mutate a random's position value
 def mutate(matrix):
     for i in range(0, len(matrix)):
-        ranNum = random.randint(1, 100)
-        if ranNum >= 1 and ranNum <= 5:
-            indexOne = random.randint(0, 9)
-            indexTwo = random.randint(0, 9)
-            auxOne = matrix[i][indexOne]
-            auxTwo = matrix[i][indexTwo]
-            matrix[i][indexOne] = auxTwo
-            matrix[i][indexTwo] = auxOne
+        for _ in range(0, len(matrix[i])):
+            ranNum = random.randint(1, 100)
+            if ranNum >= 1 and ranNum <= 5:
+                indexOne = random.randint(0, 19)
+                indexTwo = random.randint(0, 19)
+                auxOne = matrix[i][indexOne]
+                auxTwo = matrix[i][indexTwo]
+                matrix[i][indexOne] = auxTwo
+                matrix[i][indexTwo] = auxOne
 
 def generateTour():
     global tour
@@ -77,7 +78,7 @@ def calculateDistances():
         for j in range(len(population[i])):
             firstPos = 19 if tour[i][j] == 20 else tour[i][j]
             secondPos = 19 if tour[i][j+1] == 20 else tour[i][j+1]
-            distances[i] += dCidade[firstPos][secondPos]
+            distances[i] += round(dCidade[firstPos][secondPos], 4)
     dict_dist = {i: distances[i] for i in range(0, len(distances))}
     distances = copy.deepcopy(dict_dist)
     return sorted(distances.items(), key=lambda kv: kv[1])
@@ -86,7 +87,7 @@ def calculateDistances():
 def fitnessFunction():
     for i in range(len(population)):
         for j in range(len(population)):
-            dCidade[i][j] = math.sqrt((x[i] - x[j])**2 + (y[i] - y[j])**2)
+            dCidade[i][j] = round(math.sqrt(((x[i] - x[j])**2) + ((y[i] - y[j])**2)), 4)
     return calculateDistances()
 
 
@@ -189,6 +190,12 @@ def main():
     print(firstFitnessValue)
     print('-------')
     print(sorted_x)
+
+    print('Tamanho da Populacao: %s' % (20))
+    print('Taxa de Mutacao: ')
+    print('Numero de Cidades: %s' % (20))
+    print('Melhor Custo: %s' % sorted_x[0][0])
+    print('Melhor Solucao: %s' % 20)
 
     for i in population:
         print(i)
