@@ -17,13 +17,18 @@ parentsOne = None
 parentsTwo = None
 costByExecution = []
 
-
+"""
+    Generates the first population
+"""
 def generateFirstPopulation():
     # For each position, generates a new possible path
     for _ in range(1, POPULATION_SIZE + 1):
         generatePossiblePath()
 
-
+"""
+    Method called in the generateFirstPopulation() to 
+    generate a new possible path for the population
+"""
 def generatePossiblePath():
     path = []
     for _ in range(1, CITIES_SIZE + 1):
@@ -35,14 +40,19 @@ def generatePossiblePath():
         path.append(randomNum)
     population.append(path)
 
-
+"""
+    Method to verify if the number is already in the path
+"""
 def numberExistsInPath(path, number):
     for i in path:
         if i == number:
             return True
     return False
 
-
+"""
+    Generates the X and Y arrays which represents the distances
+    in the x and y axis used to calculate the identity matrix in the fitness function
+"""
 def generateXandY():
     for _ in range(CITIES_SIZE):
         randomNumber = random.random()
@@ -53,7 +63,9 @@ def generateXandY():
         randomNumber = round(randomNumber, 2)
         y.append(randomNumber)
 
-# mutate a random's position value
+"""
+    makes the swap between 2 cities in the path with a 5% chance of mutation
+"""
 def mutate(matrix):
     for i in range(0, len(matrix)):
         for _ in range(0, len(matrix[i])):
@@ -66,6 +78,11 @@ def mutate(matrix):
                 matrix[i][indexOne] = auxTwo
                 matrix[i][indexTwo] = auxOne
 
+"""
+    Generates the Tour matrix, which is the same matrix as the population,
+    but with the first column duplicated at the end of it, afterall, the traveller
+    always have to arrive at the same place of where he started
+"""
 def generateTour():
     global tour
     tour = copy.deepcopy(population)
@@ -73,7 +90,10 @@ def generateTour():
         first = ways[0]
         ways.append(first)
 
-# Generates an array with the sum of each way
+"""
+    Generates an array with the sum of each path in the population array
+    based on the tour matrix
+"""
 def calculateDistances():
     global distances
     distances = [0 for x in range(POPULATION_SIZE)]
@@ -86,14 +106,21 @@ def calculateDistances():
     distances = copy.deepcopy(dict_dist)
     return sorted(distances.items(), key=lambda kv: kv[1])
 
-# Generate the identity matrix (dCidade)
+"""
+    Generate the identity matrix (dCidade) based on the x and y arrays
+    and then call the calculateDistances() method to generate the array with the sum
+    of each path to user later in the cycle process
+"""
 def fitnessFunction():
     for i in range(len(population)):
         for j in range(len(population)):
             dCidade[i][j] = round(math.sqrt(((x[i] - x[j])**2) + ((y[i] - y[j])**2)), 4)
     return calculateDistances()
 
-
+"""
+    Performs the roulette function, generating two arrays with 5 parents each,
+    which will be used later to do the cycle process
+"""
 def rouletteFunction(sorted_x):
     global parentsOne
     global parentsTwo
@@ -107,14 +134,18 @@ def rouletteFunction(sorted_x):
     parentsOne = createParents(rouletteArr)
     parentsTwo = createParents(rouletteArr)
 
-
+"""
+    Auxiliary method used in the rouletteFunction() to generate the two parents array
+"""
 def createParents(rouletteArr):
     parentArr = []
     for _ in range(5):
         parentArr.append(rouletteArr[random.randint(0, 54)])
     return parentArr
 
-
+"""
+    Method used in the cycle method to see if there's any duplicated city
+"""
 def hasDuplicity(auxArray, usedIndexes):
     for i in range(len(auxArray)):
         for j in range(i, len(auxArray)):
@@ -125,7 +156,13 @@ def hasDuplicity(auxArray, usedIndexes):
                     return i
     return -1
 
-
+"""
+    Method that has the 'cycle' logic.
+    1. For each two children in the children array, makes a random swap between
+        the two children until there's no duplicated element
+    2. Mutate the children that were generated
+    3. Adds the children in the population array
+"""
 def doCycle(sorted_x):
     global population
     children = []
@@ -158,10 +195,11 @@ def doCycle(sorted_x):
             childOne[newIndex] = valAuxTwo
             childTwo[newIndex] = valAuxOne
 
-        # after generating the children, add them in the children's array
+        # After generating the children, add them in the children's array
         children.append(childOne)
         children.append(childTwo)
 
+    # Mutate the children array
     mutate(children)
 
     # Make a temp copy of the population before changing it
