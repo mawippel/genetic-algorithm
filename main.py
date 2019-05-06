@@ -214,18 +214,18 @@ def doCycle(sorted_x):
 
 
 def main():
-    # runs only once
+    # Runs only once. Generates the population, x and y, and tour matrix
     generateFirstPopulation()
     generateXandY()
     generateTour()
 
-    # runs in a loop 0 - 9999
+    # Runs in a loop 0 - 9999.
     for _ in range(NUM_EXECUTION):
         sorted_x = fitnessFunction()
         rouletteFunction(sorted_x)
         doCycle(sorted_x)
-        generateTour() # generate the Tour matrix again, as the population is updated
-        costByExecution.append(sorted_x[0][1])
+        generateTour() # Generate the Tour matrix again, as the population is updated
+        costByExecution.append(sorted_x[0][1]) # Appends the cost to the array of costs (plotted at the end)
 
     # Generates the fitness values for the last population
     sorted_x = fitnessFunction()
